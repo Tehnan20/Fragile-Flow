@@ -19,9 +19,7 @@ public class PlayerAttemptScript : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        PlayerId = connectionToClient.connectionId + 1;
-
-        // Debug.Log("Player ID: " + PlayerId);
+        Debug.Log("Player ID: " + PlayerId);
 
         for (int i = 0; i < 5; i++)
         {

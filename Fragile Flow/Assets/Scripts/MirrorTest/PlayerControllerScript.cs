@@ -25,6 +25,13 @@ public class PlayerControllerScript : NetworkBehaviour
     {
         TurnManager = FindFirstObjectByType<TurnManagerScript>();
     }
+    public override void OnStopServer()
+    {
+        if (TurnManager != null)
+        {
+            TurnManager.RemovePlayer(netIdentity);
+        }
+    }
 
     void Update()
     {
@@ -68,6 +75,12 @@ public class PlayerControllerScript : NetworkBehaviour
         return netIdentity.netId == TurnManager.CurrentTurnNetId;
     }
 
+    public void EndTurn()
+    {
+        if (!isLocalPlayer) return;
+        TurnManager.CmdEndTurn();
+    }
+
     // Command runs from client to server
     [Command]
     public void CmdMove(float h, float v)
@@ -79,11 +92,5 @@ public class PlayerControllerScript : NetworkBehaviour
     void CmdRotate(float mouseX)
     {
         transform.Rotate(Vector3.up * mouseX * 300f * Time.deltaTime);
-    }
-
-    public void EndTurn()
-    {
-        if (!isLocalPlayer) return;
-        TurnManager.CmdEndTurn();
     }
 }

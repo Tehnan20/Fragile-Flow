@@ -21,10 +21,28 @@ public class TurnManagerScript : NetworkBehaviour
         if (!isServer) return;
 
         Players.Add(player);
+
+        int newId = Players.Count;
+        player.GetComponent<PlayerAttemptScript>().PlayerId = newId;
+
         if (Players.Count == 1)
         {
             CurrentTurnNetId = player.netId;
         }
+    }
+    [Server]
+    public void RemovePlayer(NetworkIdentity player)
+    {
+        if (Players.Contains(player))
+            Players.Remove(player);
+
+        if (Players.Count == 0)
+            return;
+
+        if (CurrentTurnIndex >= Players.Count)
+            CurrentTurnIndex = 0;
+
+        CurrentTurnNetId = Players[CurrentTurnIndex].netId;
     }
 
     [Command(requiresAuthority = false)]
