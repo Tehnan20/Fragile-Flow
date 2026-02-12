@@ -27,11 +27,11 @@ public class TurnManagerScript : NetworkBehaviour
             
         if(Players[0].GetComponent<PlayerAttemptScript>().PlayerId != newId)
         {
-            Players.GetComponent<PlayerAttemptScript>().PlayerId = newId;
+            player.GetComponent<PlayerAttemptScript>().PlayerId = newId;
         }
         else
         {
-            Players.GetComponent<PlayerAttemptScript>().PlayerId = 1;
+            player.GetComponent<PlayerAttemptScript>().PlayerId = 1;
         }
 
         if (Players.Count == 1)
