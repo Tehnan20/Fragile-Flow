@@ -19,6 +19,10 @@ public class GameUIScript : MonoBehaviour
 
     public void OnResetClicked()
     {
+        if (TurnManager == null)
+        {
+            return;
+        }
         TurnManager.Reset();
     }
 }

@@ -153,6 +153,7 @@ GameObject:
   - component: {fileID: 3222067748921318099}
   - component: {fileID: 7634460167217059075}
   - component: {fileID: 2177225887459464842}
+  - component: {fileID: 3469558798097241841}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -231,7 +232,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!136 &8391985402387446557
 CapsuleCollider:
@@ -323,6 +323,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   TurnManager: {fileID: 0}
+  RoomManager: {fileID: 0}
   Speed: 5
 --- !u!114 &2177225887459464842
 MonoBehaviour:
@@ -343,6 +344,22 @@ MonoBehaviour:
   CurrentAttempt: 0
   Wins: 0
   PlayerNameText: {fileID: 280644404563558426}
+--- !u!114 &3469558798097241841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5901733197329401974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d17e718851449a6879986e45c458fb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkMatch
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  MatchID: 
 --- !u!1 &8542426980062964172
 GameObject:
   m_ObjectHideFlags: 0

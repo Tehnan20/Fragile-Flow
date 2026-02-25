@@ -6,6 +6,7 @@ using TMPro;
 public class PlayerControllerScript : NetworkBehaviour
 {
     public TurnManagerScript TurnManager;
+    public RoomManagerScript RoomManager;
 
     public float Speed = 5f;
 
@@ -18,8 +19,10 @@ public class PlayerControllerScript : NetworkBehaviour
 
     public override void OnStartServer()
     {
+        RoomManager = FindFirstObjectByType<RoomManagerScript>();
+        RoomManager.AddPlayer(netIdentity);
+
         TurnManager = FindFirstObjectByType<TurnManagerScript>();
-        TurnManager.RegisterPlayer(netIdentity);
     }
     public override void OnStartClient()
     {
@@ -27,6 +30,10 @@ public class PlayerControllerScript : NetworkBehaviour
     }
     public override void OnStopServer()
     {
+        if(RoomManager != null)
+        {
+            RoomManager.RemovePlayer(netIdentity);
+        }
         if (TurnManager != null)
         {
             TurnManager.RemovePlayer(netIdentity);
@@ -35,6 +42,10 @@ public class PlayerControllerScript : NetworkBehaviour
 
     void Update()
     {
+        if (TurnManager == null)
+        {
+            return;
+        }
         if (IsMyTurn())
         {
             PlayerRenderer.material.color = Color.green;
@@ -49,18 +60,22 @@ public class PlayerControllerScript : NetworkBehaviour
             return;
         }
 
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
+        // float h = Input.GetAxis("Horizontal");
+        // float v = Input.GetAxis("Vertical");
 
-        if (h != 0 || v != 0)
-        {
-            CmdMove(h, v);
-        }
-        CmdRotate(Input.GetAxis("Mouse X"));
+        // if (h != 0 || v != 0)
+        // {
+        //     CmdMove(h, v);
+        // }
+        // CmdRotate(Input.GetAxis("Mouse X"));
     }
 
     public void PlayerTurnBtn()
     {
+        if (TurnManager == null)
+        {
+            return;
+        }
         if (!IsMyTurn() || !isLocalPlayer)
         {
             return;

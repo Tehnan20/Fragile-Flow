@@ -22,17 +22,18 @@ public class TurnManagerScript : NetworkBehaviour
 
         Players.Add(player);
 
-        int newId = Players.Count;
+        // int newId = Players.Count;
+        player.GetComponent<PlayerAttemptScript>().PlayerId = Players.Count;
 
             
-        if(Players[0].GetComponent<PlayerAttemptScript>().PlayerId != newId)
-        {
-            player.GetComponent<PlayerAttemptScript>().PlayerId = newId;
-        }
-        else
-        {
-            player.GetComponent<PlayerAttemptScript>().PlayerId = 1;
-        }
+        // if(Players[0].GetComponent<PlayerAttemptScript>().PlayerId != newId)
+        // {
+        //     player.GetComponent<PlayerAttemptScript>().PlayerId = newId;
+        // }
+        // else
+        // {
+        //     player.GetComponent<PlayerAttemptScript>().PlayerId = 1;
+        // }
 
         if (Players.Count == 1)
         {
