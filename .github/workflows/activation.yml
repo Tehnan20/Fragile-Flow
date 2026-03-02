@@ -1,0 +1,20 @@
+name: Acquire Unity Activation File
+
+on:
+  workflow_dispatch: {} # Allows you to trigger this manually
+
+jobs:
+  request-activation-file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Request manual activation file
+        uses: game-ci/unity-request-activation-file@v4
+        id: getManualLicenseFile
+        with:
+          unityVersion: 6000.0.67f1 # Your exact Unity version
+
+      - name: Expose as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Unity_v6000.0.67f1.alf
+          path: ${{ steps.getManualLicenseFile.outputs.filePath }}
