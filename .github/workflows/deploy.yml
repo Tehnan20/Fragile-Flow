@@ -25,8 +25,8 @@ jobs:
       - name: Cache Unity Library
         uses: actions/cache@v3
         with:
-          path: Fragile-Flow/Library
-          key: Library-${{ hashFiles('Fragile-Flow/Assets/**', 'Fragile-Flow/Packages/**', 'Fragile-Flow/ProjectSettings/**') }}
+          path: Fragile-Flow/Fragile-Flow/Library
+          key: Library-${{ hashFiles('Fragile-Flow/Fragile-Flow/Assets/**', 'Fragile-Flow/Fragile-Flow/Packages/**', 'Fragile-Flow/Fragile-Flow/ProjectSettings/**') }}
           restore-keys: |
             Library-
 
@@ -40,7 +40,7 @@ jobs:
         with:
           targetPlatform: StandaloneLinux64
           versioning: Semantic
-          projectPath: Fragile-Flow
+          projectPath: Fragile-Flow/Fragile-Flow
           # By default, GameCI outputs the build to `build/StandaloneLinux64`
 
       # --- NEW: PREPARE FILES FOR DOCKER ---
