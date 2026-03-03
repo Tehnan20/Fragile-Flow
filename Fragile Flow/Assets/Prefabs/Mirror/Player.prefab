@@ -322,6 +322,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  TurnManagerIdentity: {fileID: 0}
   TurnManager: {fileID: 0}
   RoomManager: {fileID: 0}
   Speed: 5
@@ -340,7 +341,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  PlayerId: 0
   CurrentAttempt: 0
   Wins: 0
   PlayerNameText: {fileID: 280644404563558426}

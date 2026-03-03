@@ -11,19 +11,23 @@ public class TurnManagerScript : NetworkBehaviour
     public uint CurrentTurnNetId;
 
     public List<NetworkIdentity> Players = new List<NetworkIdentity>();
+    public readonly SyncList<uint> PlayerNetIds = new SyncList<uint>();
+    public RoomManagerScript RoomManager;
 
-    [SyncVar(hook = nameof(OnWinnerChanged))]
-    public string WinnerResult;
-    public TMP_Text WinnerText;
+    // [SyncVar(hook = nameof(OnWinnerChanged))]
+    [SyncVar]
+    public string WinnerResult = "";
 
     public void RegisterPlayer(NetworkIdentity player)
     {
         if (!isServer) return;
 
         Players.Add(player);
+        PlayerNetIds.Add(player.netId);
+        player.GetComponent<PlayerAttemptScript>().TurnManager = this;
 
         // int newId = Players.Count;
-        player.GetComponent<PlayerAttemptScript>().PlayerId = Players.Count;
+        // player.GetComponent<PlayerAttemptScript>().PlayerId = Players.Count;
 
             
         // if(Players[0].GetComponent<PlayerAttemptScript>().PlayerId != newId)
@@ -35,10 +39,10 @@ public class TurnManagerScript : NetworkBehaviour
         //     player.GetComponent<PlayerAttemptScript>().PlayerId = 1;
         // }
 
-        if (Players.Count == 1)
-        {
-            CurrentTurnNetId = player.netId;
-        }
+        // if (Players.Count == 1)
+        // {
+        //     CurrentTurnNetId = player.netId;
+        // }
     }
     [Server]
     public void RemovePlayer(NetworkIdentity player)
@@ -55,8 +59,22 @@ public class TurnManagerScript : NetworkBehaviour
         CurrentTurnNetId = Players[CurrentTurnIndex].netId;
     }
 
-    [Command(requiresAuthority = false)]
-    public void CmdEndTurn()
+    [Server]
+    public void InitializeMatch()
+    {
+        if (Players.Count == 0)
+        {
+            return;
+        }
+
+        CurrentTurnIndex = 0;
+        CurrentTurnNetId = Players[0].netId;
+        // Debug.Log("Set turn to: " + CurrentTurnNetId);
+    }
+
+    // [Command(requiresAuthority=false)]
+    [Server]
+    public void EndTurn()
     {
         if (Players.Count == 0)
         {
@@ -66,10 +84,12 @@ public class TurnManagerScript : NetworkBehaviour
         CurrentTurnIndex = (CurrentTurnIndex + 1) % Players.Count;
 
         CurrentTurnNetId = Players[CurrentTurnIndex].netId;
+
+        CheckWinner();
     }
 
-    // [Server]
-    [Command(requiresAuthority=false)]
+    [Server]
+    // [Command(requiresAuthority=false)]
     public void CheckWinner()
     {
         if(Players.Count < 2)
@@ -113,10 +133,10 @@ public class TurnManagerScript : NetworkBehaviour
 
     void OnTurnChanged(int oldTurn, int newTurn)
     {
-        Debug.Log("Turn changed to player index: " + newTurn);
+        // Debug.Log("Turn changed to player index: " + newTurn);
     }
-    void OnWinnerChanged(string oldVal, string newVal)
-    {
-        WinnerText.text = newVal;
-    }
+    // void OnWinnerChanged(string oldVal, string newVal)
+    // {
+    //     // WinnerText.text = newVal;
+    // }
 }
