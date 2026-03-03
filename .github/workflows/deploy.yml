@@ -41,12 +41,10 @@ jobs:
         with:
           targetPlatform: StandaloneLinux64
           versioning: Semantic
-          # Point exactly to the folder containing ProjectSettings
           projectPath: "Fragile Flow"
-          # By default, GameCI outputs the build to `build/StandaloneLinux64`
+          buildName: MyGameServer # <--- Forces Unity to name the output MyGameServer
 
       # --- NEW: PREPARE FILES FOR DOCKER ---
-      # Your Dockerfile expects a folder named "server_build" and a specific executable name.
       - name: Rename Build Folder for Dockerfile
         run: |
           # 1. Take ownership of the files created by the GameCI docker container
@@ -55,10 +53,16 @@ jobs:
           # 2. Rename the folder so your Dockerfile can find it
           mv build/StandaloneLinux64 server_build
 
-          # 3. Rename the executable file. GameCI likely named it after your project (e.g., "Fragile Flow.x86_64").
-          # Your Dockerfile specifically looks for "MyGameServer.x86_64" to run the server.
-          # This ensures the file names match perfectly.
-          mv server_build/*.x86_64 server_build/MyGameServer.x86_64
+          # 3. Print the folder contents to the log so we can see exactly what Unity built!
+          echo "--- Contents of server_build ---"
+          ls -la server_build
+
+          # 4. Safely ensure the executable matches your Dockerfile CMD ("MyGameServer.x86_64")
+          # If Unity generated "MyGameServer" (no extension), rename it.
+          if [ -f server_build/MyGameServer ]; then
+            echo "Renaming MyGameServer to MyGameServer.x86_64"
+            mv server_build/MyGameServer server_build/MyGameServer.x86_64
+          fi
 
       # 1) Login to Alibaba ACR
       - name: Login to Alibaba Cloud ACR
