@@ -40,7 +40,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: StandaloneLinux64
-          additionalParameters: -standaloneBuildSubtarget Server
+          customParameters: -standaloneBuildSubtarget Server
           versioning: Semantic
           projectPath: "Fragile Flow"
           buildName: MyGameServer # <--- Forces Unity to name the output MyGameServer
