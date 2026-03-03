@@ -49,14 +49,16 @@ jobs:
       # Your Dockerfile expects a folder named "server_build" and a specific executable name.
       - name: Rename Build Folder for Dockerfile
         run: |
-          # Rename GameCI output folder to match what your Dockerfile expects
+          # 1. Take ownership of the files created by the GameCI docker container
+          sudo chown -R $USER:$USER build
+
+          # 2. Rename the folder so your Dockerfile can find it
           mv build/StandaloneLinux64 server_build
 
-          # IMPORTANT: GameCI names the executable based on your Unity Project Name.
-          # If your project isn't named "MyGameServer", we need to rename the executable 
-          # so your Dockerfile CMD ("MyGameServer.x86_64") still works.
-          # Uncomment and adjust the line below if necessary:
-          # mv server_build/*.x86_64 server_build/MyGameServer.x86_64
+          # 3. Rename the executable file. GameCI likely named it after your project (e.g., "Fragile Flow.x86_64").
+          # Your Dockerfile specifically looks for "MyGameServer.x86_64" to run the server.
+          # This ensures the file names match perfectly.
+          mv server_build/*.x86_64 server_build/MyGameServer.x86_64
 
       # 1) Login to Alibaba ACR
       - name: Login to Alibaba Cloud ACR
