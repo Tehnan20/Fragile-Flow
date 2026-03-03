@@ -39,7 +39,7 @@ jobs:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          targetPlatform: StandaloneLinux64
+          targetPlatform: StandaloneLinux64Server
           versioning: Semantic
           projectPath: "Fragile Flow"
           buildName: MyGameServer # <--- Forces Unity to name the output MyGameServer
@@ -51,7 +51,7 @@ jobs:
           sudo chown -R $USER:$USER build
 
           # 2. Rename the folder so your Dockerfile can find it
-          mv build/StandaloneLinux64 server_build
+          mv build/StandaloneLinux64Server server_build
 
           # 3. Print the folder contents to the log so we can see exactly what Unity built!
           echo "--- Contents of server_build ---"
