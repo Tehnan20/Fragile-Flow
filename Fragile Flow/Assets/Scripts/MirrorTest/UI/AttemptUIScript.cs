@@ -1,18 +1,24 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using Mirror;
 
 public class AttemptUIScript : MonoBehaviour
 {
+    // TurnManagerScript TurnManager;
     public int UIPlayerId;
     public PlayerAttemptScript Player;
     public Image[] Boxes; // size 5
+    public TMP_Text DebuTxt;
 
     void Update()
     {
         if (Player == null)
         {
-            FindPlayer();
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                FindPlayer();
+            }
             return;
         }
         
@@ -35,10 +41,19 @@ public class AttemptUIScript : MonoBehaviour
 
     void FindPlayer()
     {
-        var players = FindObjectsOfType<PlayerAttemptScript>();
-        foreach (var p in players)
+        var local = NetworkClient.localPlayer.GetComponent<PlayerControllerScript>();
+        TurnManagerScript tm = local.TurnManager;
+        
+        if (tm == null) return;
+
+        if (tm.PlayerNetIds.Count <= UIPlayerId)
+            return;
+
+        uint targetNetId = tm.PlayerNetIds[UIPlayerId];
+
+        foreach (var p in FindObjectsOfType<PlayerAttemptScript>())
         {
-            if (p.PlayerId == UIPlayerId)
+            if (p.netIdentity.netId == targetNetId)
             {
                 Player = p;
                 break;

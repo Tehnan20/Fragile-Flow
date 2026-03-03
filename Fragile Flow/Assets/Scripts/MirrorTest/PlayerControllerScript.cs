@@ -2,13 +2,18 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 public class PlayerControllerScript : NetworkBehaviour
 {
+    [SyncVar(hook = nameof(OnTurnManagerChanged))]
+    public NetworkIdentity TurnManagerIdentity;
     public TurnManagerScript TurnManager;
     public RoomManagerScript RoomManager;
+    [SyncVar]
+    public int ChallengeAmount;
 
-    public float Speed = 5f;
+    // public float Speed = 5f;
 
     Renderer PlayerRenderer;
 
@@ -16,17 +21,20 @@ public class PlayerControllerScript : NetworkBehaviour
     {
         PlayerRenderer = GetComponent<Renderer>();
     }
+    public override void OnStartLocalPlayer()
+    {
+        
+    }
 
     public override void OnStartServer()
     {
         RoomManager = FindFirstObjectByType<RoomManagerScript>();
-        RoomManager.AddPlayer(netIdentity);
-
-        TurnManager = FindFirstObjectByType<TurnManagerScript>();
+        // TurnManager = FindFirstObjectByType<TurnManagerScript>();
     }
     public override void OnStartClient()
     {
-        TurnManager = FindFirstObjectByType<TurnManagerScript>();
+        RoomManager = FindFirstObjectByType<RoomManagerScript>();
+        // TurnManager = FindFirstObjectByType<TurnManagerScript>();
     }
     public override void OnStopServer()
     {
@@ -34,10 +42,10 @@ public class PlayerControllerScript : NetworkBehaviour
         {
             RoomManager.RemovePlayer(netIdentity);
         }
-        if (TurnManager != null)
-        {
-            TurnManager.RemovePlayer(netIdentity);
-        }
+        // if (TurnManager != null)
+        // {
+        //     TurnManager.RemovePlayer(netIdentity);
+        // }
     }
 
     void Update()
@@ -48,11 +56,17 @@ public class PlayerControllerScript : NetworkBehaviour
         }
         if (IsMyTurn())
         {
-            PlayerRenderer.material.color = Color.green;
+            if(PlayerRenderer.material.color == Color.white)
+            {
+                PlayerRenderer.material.color = Random.ColorHSV();
+            }
         }
         else
         {
-            PlayerRenderer.material.color = Color.white;
+            if(PlayerRenderer.material.color != Color.white)
+            {
+                PlayerRenderer.material.color = Color.white;
+            }
             return;
         }
         if (!isLocalPlayer)
@@ -70,19 +84,22 @@ public class PlayerControllerScript : NetworkBehaviour
         // CmdRotate(Input.GetAxis("Mouse X"));
     }
 
+    [Command]
+    public void CmdAddPlayer(int challengeAmount)
+    {
+        ChallengeAmount = challengeAmount;
+        RoomManager.AddPlayer(netIdentity, challengeAmount);
+    }
+
     public void PlayerTurnBtn()
     {
-        if (TurnManager == null)
-        {
-            return;
-        }
-        if (!IsMyTurn() || !isLocalPlayer)
+        if (TurnManager == null || !IsMyTurn())
         {
             return;
         }
         GetComponent<PlayerAttemptScript>().CmdTakeAttempt();
-        TurnManager.CheckWinner();
-        EndTurn();
+        // TurnManager.EndTurn();
+        // TurnManager.CheckWinner();
     }
 
     public bool IsMyTurn()
@@ -90,22 +107,30 @@ public class PlayerControllerScript : NetworkBehaviour
         return netIdentity.netId == TurnManager.CurrentTurnNetId;
     }
 
+    [Command]
     public void EndTurn()
     {
-        if (!isLocalPlayer) return;
-        TurnManager.CmdEndTurn();
+        TurnManager.EndTurn();
+    }
+
+    void OnTurnManagerChanged(NetworkIdentity oldVal, NetworkIdentity newVal)
+    {
+        if (newVal != null)
+        {
+            TurnManager = newVal.GetComponent<TurnManagerScript>();
+        }
     }
 
     // Command runs from client to server
-    [Command]
-    public void CmdMove(float h, float v)
-    {
-        Vector3 move = new Vector3(h, 0, v);
-        transform.Translate(move * Speed * Time.deltaTime);
-    }
-    [Command]
-    void CmdRotate(float mouseX)
-    {
-        transform.Rotate(Vector3.up * mouseX * 300f * Time.deltaTime);
-    }
+    // [Command]
+    // public void CmdMove(float h, float v)
+    // {
+    //     Vector3 move = new Vector3(h, 0, v);
+    //     transform.Translate(move * Speed * Time.deltaTime);
+    // }
+    // [Command]
+    // void CmdRotate(float mouseX)
+    // {
+    //     transform.Rotate(Vector3.up * mouseX * 300f * Time.deltaTime);
+    // }
 }
